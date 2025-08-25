@@ -1,70 +1,76 @@
 import streamlit as st
 import random
 
-# --- 따뜻하고 벅차오르는 문구 데이터 ---
-quotes = {
-    "행복 😊": [
-        "너의 오늘은 어제보다 더 빛나고 있어 ✨",
-        "세상이 너를 중심으로 반짝이고 있어 🌈",
-        "작은 기쁨이 모여 너의 삶을 환하게 밝히고 있어 🌞"
-    ],
-    "슬픔 😢": [
-        "너의 눈물이 의미 없는 건 하나도 없어 💧",
-        "세상은 네가 다시 웃을 날을 기다리고 있어 🌷",
-        "지금의 슬픔은 너를 더 단단하게 만들어줄 거야 🌙"
-    ],
-    "불안 😟": [
-        "너는 이미 충분히 잘하고 있어 🌊",
-        "걱정은 결국 사라지고, 네가 빛나는 순간만 남을 거야 🌟",
-        "너의 발걸음은 천천히지만 확실하게 앞으로 나아가고 있어 🚶‍♂️"
-    ],
-    "설렘 💖": [
-        "너의 두근거림은 새로운 시작의 신호야 🌸",
-        "가슴 뛰는 순간이 네 인생을 가장 아름답게 만들어 🌈",
-        "설레는 마음이 널 더 빛나게 하고 있어 ✨"
-    ],
-    "분노 🔥": [
-        "네 안의 불꽃은 세상을 바꿀 힘이야 🔥",
-        "화는 사라지지만, 너의 열정은 남아 세상을 밝힐 거야 ☀️",
-        "너의 뜨거움은 결국 위대한 힘으로 바뀔 거야 ⚡"
-    ]
+# 감정 키워드별 따뜻한 말과 노래 추천
+emotion_data = {
+    "슬픔": {
+        "message": [
+            "지금 느끼는 아픔도 언젠가는 당신의 강함이 될 거예요 🌷",
+            "눈물이 난다는 건 그만큼 진심으로 살아가고 있다는 증거예요 💧",
+            "당신은 혼자가 아니에요. 이 순간도 곧 지나갈 거예요 ☀️"
+        ],
+        "songs": [
+            ("아이유 - 너의 의미", "https://youtu.be/9GKG4AgF6eU"),
+            ("Coldplay - Fix You", "https://youtu.be/k4V3Mo61fJM"),
+            ("볼빨간사춘기 - 우주를 줄게", "https://youtu.be/nM0xDI5R50E")
+        ]
+    },
+    "기쁨": {
+        "message": [
+            "당신의 웃음은 세상을 더 빛나게 해요 ✨",
+            "행복한 지금, 그 마음을 오래오래 간직하세요 🌈",
+            "당신이 웃을 때 세상도 함께 웃는 것 같아요 😄"
+        ],
+        "songs": [
+            ("Pharrell Williams - Happy", "https://youtu.be/ZbZSe6N_BXs"),
+            ("BTS - Dynamite", "https://youtu.be/gdZLi9oWNZg"),
+            ("Red Velvet - 행복", "https://youtu.be/QpAn9ryoB4Y")
+        ]
+    },
+    "불안": {
+        "message": [
+            "숨을 크게 들이마시고 내쉬어 보세요. 모든 게 괜찮아질 거예요 🍀",
+            "당신은 지금 충분히 잘하고 있어요 🙌",
+            "완벽하지 않아도 괜찮아요. 있는 그대로의 당신이 소중해요 💖"
+        ],
+        "songs": [
+            ("Shawn Mendes - In My Blood", "https://youtu.be/36tggrpRoTI"),
+            ("잔나비 - 주저하는 연인들을 위해", "https://youtu.be/bMt47wvK6u0"),
+            ("폴킴 - 모든 날, 모든 순간", "https://youtu.be/OMTizJemHO8")
+        ]
+    },
+    "분노": {
+        "message": [
+            "화난 마음도 결국 지나가요. 당신은 그 이상으로 강한 사람이에요 🔥",
+            "잠시 숨을 고르고, 스스로를 위로해 주세요 🌌",
+            "당신의 감정은 언제나 존중받을 자격이 있어요 💪"
+        ],
+        "songs": [
+            ("Eminem - Lose Yourself", "https://youtu.be/_Yhyp-_hX2s"),
+            ("Imagine Dragons - Believer", "https://youtu.be/7wtfhZwyrcc"),
+            ("Stray Kids - MANIAC", "https://youtu.be/OvioeS1ZZ7o")
+        ]
+    }
 }
 
-# --- 앱 UI ---
-st.set_page_config(page_title="기분별 위로의 한마디", page_icon="🌟", layout="centered")
+st.set_page_config(page_title="감정 힐링 웹앱 💖", page_icon="🌸", layout="centered")
 
-st.markdown(
-    """
-    <h1 style="text-align:center; color:#ff66b2; font-size:60px;">
-        🌟 오늘의 마음 위로 한마디 🌟
-    </h1>
-    """,
-    unsafe_allow_html=True
-)
+st.title("🌷 감정 힐링 웹앱 🎶")
+st.write("지금 느끼는 감정을 입력해보세요. 당신만을 위한 따뜻한 말과 노래를 추천해드릴게요 💕")
 
-# 기분 선택
-emotion = st.selectbox("지금 너의 기분은 어떤가요? 💭", list(quotes.keys()))
+# 사용자 입력
+user_emotion = st.text_input("오늘 당신의 감정을 적어주세요 ✍️ (예: 슬픔, 기쁨, 불안, 분노)")
 
-# 버튼 클릭 시 문구 출력
-if st.button("✨ 위로 받기 ✨"):
-    chosen_quote = random.choice(quotes[emotion])
-    
-    st.markdown(
-        f"""
-        <div style="
-            background: linear-gradient(135deg, #ffb3d9, #ffe066, #a3e6ff);
-            padding: 40px;
-            border-radius: 25px;
-            box-shadow: 0px 8px 30px rgba(0,0,0,0.3);
-            text-align: center;
-        ">
-            <h2 style="color:#ffffff; font-size:36px; line-height:1.6;">
-                {chosen_quote}
-            </h2>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+if user_emotion:
+    if user_emotion in emotion_data:
+        data = emotion_data[user_emotion]
+        message = random.choice(data["message"])
+        song = random.choice(data["songs"])
 
-    st.balloons()
-    st.snow()
+        st.markdown(f"### 💌 따뜻한 말")
+        st.success(message)
+
+        st.markdown(f"### 🎶 추천 노래")
+        st.markdown(f"**{song[0]}** [👉 바로 듣기]({song[1]})")
+    else:
+        st.warning("앗, 아직 그 감정은 준비되지 않았어요 😢 슬픔, 기쁨, 불안, 분노 중에서 입력해보세요!")
