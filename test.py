@@ -1,63 +1,70 @@
 import streamlit as st
-from collections import Counter
-import requests
+import random
 
-# ----------------------------
-# 단어 정보 가져오기 (Dictionary API 사용)
-# ----------------------------
-def get_word_definition(word):
-    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()[0]
-        meaning = data["meanings"][0]["definitions"][0]["definition"]
-        example = data["meanings"][0]["definitions"][0].get("example", "예문 없음")
-        phonetic = data.get("phonetic", "")
-        return meaning, example, phonetic
-    else:
-        return "정의 없음", "예문 없음", ""
+# --- 따뜻하고 벅차오르는 문구 데이터 ---
+quotes = {
+    "행복 😊": [
+        "너의 오늘은 어제보다 더 빛나고 있어 ✨",
+        "세상이 너를 중심으로 반짝이고 있어 🌈",
+        "작은 기쁨이 모여 너의 삶을 환하게 밝히고 있어 🌞"
+    ],
+    "슬픔 😢": [
+        "너의 눈물이 의미 없는 건 하나도 없어 💧",
+        "세상은 네가 다시 웃을 날을 기다리고 있어 🌷",
+        "지금의 슬픔은 너를 더 단단하게 만들어줄 거야 🌙"
+    ],
+    "불안 😟": [
+        "너는 이미 충분히 잘하고 있어 🌊",
+        "걱정은 결국 사라지고, 네가 빛나는 순간만 남을 거야 🌟",
+        "너의 발걸음은 천천히지만 확실하게 앞으로 나아가고 있어 🚶‍♂️"
+    ],
+    "설렘 💖": [
+        "너의 두근거림은 새로운 시작의 신호야 🌸",
+        "가슴 뛰는 순간이 네 인생을 가장 아름답게 만들어 🌈",
+        "설레는 마음이 널 더 빛나게 하고 있어 ✨"
+    ],
+    "분노 🔥": [
+        "네 안의 불꽃은 세상을 바꿀 힘이야 🔥",
+        "화는 사라지지만, 너의 열정은 남아 세상을 밝힐 거야 ☀️",
+        "너의 뜨거움은 결국 위대한 힘으로 바뀔 거야 ⚡"
+    ]
+}
 
-# ----------------------------
-# Streamlit UI
-# ----------------------------
-st.title("📖 영어 단어 학습 분석 앱")
-st.write("영어 단어를 입력하면 뜻, 예문, 발음과 함께 간단한 빈도 분석을 제공합니다!")
+# --- 앱 UI ---
+st.set_page_config(page_title="기분별 위로의 한마디", page_icon="🌟", layout="centered")
 
-# 단어 입력
-word = st.text_input("단어를 입력하세요:", "")
-
-if word:
-    # 단어 정보 출력
-    meaning, example, phonetic = get_word_definition(word)
-    st.subheader(f"🔎 단어 정보: {word}")
-    st.write(f"**발음**: {phonetic}")
-    st.write(f"**뜻**: {meaning}")
-    st.write(f"**예문**: {example}")
-
-    # 샘플 텍스트 데이터 (나중에 실제 기사/텍스트로 확장 가능)
-    sample_text = """
-    Democracy is the government of the people, by the people, for the people.
-    Freedom and rights are essential in a democracy.
-    A strong government protects the rights of its citizens.
+st.markdown(
     """
-    words = sample_text.lower().split()
-    counter = Counter(words)
+    <h1 style="text-align:center; color:#ff66b2; font-size:60px;">
+        🌟 오늘의 마음 위로 한마디 🌟
+    </h1>
+    """,
+    unsafe_allow_html=True
+)
 
-    # 빈도 그래프 (Streamlit 기본 차트 사용)
-    st.subheader("📊 단어 빈도 분석")
-    st.bar_chart(dict(counter))
+# 기분 선택
+emotion = st.selectbox("지금 너의 기분은 어떤가요? 💭", list(quotes.keys()))
 
-    # 학습 리스트 저장
-    if "learned_words" not in st.session_state:
-        st.session_state["learned_words"] = []
+# 버튼 클릭 시 문구 출력
+if st.button("✨ 위로 받기 ✨"):
+    chosen_quote = random.choice(quotes[emotion])
+    
+    st.markdown(
+        f"""
+        <div style="
+            background: linear-gradient(135deg, #ffb3d9, #ffe066, #a3e6ff);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0px 8px 30px rgba(0,0,0,0.3);
+            text-align: center;
+        ">
+            <h2 style="color:#ffffff; font-size:36px; line-height:1.6;">
+                {chosen_quote}
+            </h2>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    if st.button("👉 단어 학습 목록에 추가"):
-        st.session_state["learned_words"].append(word)
-        st.success(f"'{word}' 단어가 학습 목록에 추가되었습니다!")
-
-# 학습 목록 보기
-if "learned_words" in st.session_state:
-    st.subheader("📚 나의 학습 목록")
-    st.write(st.session_state["learned_words"])
-
-
+    st.balloons()
+    st.snow()
